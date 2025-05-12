@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -11,6 +12,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.TextFieldValue
@@ -57,12 +59,12 @@ fun TemperatureSettingsScreen() {
         Text("Alert if below")
         Column {
             Slider(value = minTemp, onValueChange = { minTemp = it }, valueRange = -10f..20f)
-            Text(text = "${minTemp}°C")
+            Text(text = "${minTemp.toInt()}°C")
         }
         Text("Alert if above")
         Column {
             Slider(value = maxTemp, onValueChange = { maxTemp = it }, valueRange = 25f..45f)
-            Text(text = "${maxTemp}°C")
+            Text(text = "${maxTemp.toInt()}°C")
         }
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {
@@ -70,7 +72,7 @@ fun TemperatureSettingsScreen() {
                 try {
                     val request = TemperatureSettingRequest(memberId, minTemp, maxTemp)
                     Log.d("DEBUG", "request: $request")
-                    val response = RetrofitClient.apiService.saveSettings(request)
+                    val response = RetrofitClient.apiService.saveTempSettings(request)
                     Log.d("DEBUG", "Response: $response")
                     if (response.isSuccessful) {
                         Toast.makeText(context, "Settings saved", Toast.LENGTH_SHORT).show()
@@ -87,22 +89,40 @@ fun TemperatureSettingsScreen() {
 
 @Composable
 fun AirQualitySettingsScreen() {
-    var pm10 by remember { mutableStateOf(80f) }
-    var pm25 by remember { mutableStateOf(35f) }
-    var message by remember { mutableStateOf(TextFieldValue("Poor air quality. Wear a mask!")) }
-
     Column(modifier = Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("PM10")
-        Column {
-            Slider(value = pm10, onValueChange = { pm10 = it }, valueRange = 0f..200f)
-            Text(text = "${pm10.toInt()}ppm")
+        Text("미세먼지 등급 선택")
+        val options = listOf("좋음", "보통", "나쁨")
+        var selectedQualityPM10 by remember { mutableStateOf("보통") }
+        Text("pm10 ")
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            options.forEach { level ->
+                Button(
+                    onClick = { selectedQualityPM10 = level },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (selectedQualityPM10 == level) Color(0xFF6A1B9A) else Color.LightGray
+                    )
+                ) {
+                    Text(level, color = Color.White)
+                }
+            }
         }
-        Text("PM2.5")
-        Column {
-            Slider(value = pm25, onValueChange = { pm25 = it }, valueRange = 0f..100f)
-            Text(text = "${pm25.toInt()}ppm")
+        Text("선택된 등급: ${selectedQualityPM10}")
+        var selectedQualityPM25 by remember { mutableStateOf("보통") }
+        Text("pm25 ")
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            options.forEach { level ->
+                Button(
+                    onClick = { selectedQualityPM25 = level },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (selectedQualityPM25 == level) Color(0xFF6A1B9A) else Color.LightGray
+                    )
+                ) {
+                    Text(level, color = Color.White)
+                }
+            }
         }
-        TextField(value = message.text, onValueChange = { message = TextFieldValue(it) })
+        Text("선택된 등급: ${selectedQualityPM25}")
+        Text("선택한 등급 이상일 때 알림이 발송됩니다!")
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {}) { Text("Save") }
     }

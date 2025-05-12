@@ -27,6 +27,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10" // 버전은 최신 Compose에 맞게
+    }
 
     kotlinOptions {
         jvmTarget = "17"
@@ -52,4 +55,16 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.0")
     debugImplementation("androidx.compose.ui:ui-tooling:1.6.0")
+
+    // ViewModel + Compose 연동
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
+    // LiveData observeAsState
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.1")
+
+    // Activity Compose
+    implementation("androidx.activity:activity-compose:1.7.2")
+
+    // Optional: 코틀린 코루틴
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }

@@ -8,6 +8,6 @@ object RetrofitClient {
         .baseUrl("http://10.0.2.2:8080/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-    val apiService: TemperatureApiService = retrofit.create(TemperatureApiService::class.java)
+    val apiService: ApiService = retrofit.create(ApiService::class.java)
 
 }

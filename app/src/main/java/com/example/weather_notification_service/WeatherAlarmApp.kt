@@ -1,5 +1,7 @@
 package com.example.weather_notification_service
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
@@ -10,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeatherAlarmApp() {
     var screen by remember { mutableStateOf(0) }

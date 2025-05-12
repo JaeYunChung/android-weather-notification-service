@@ -5,8 +5,8 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface TemperatureApiService {
+interface ApiService {
     @POST("/temp/setting/")
-    suspend fun saveSettings(@Body request: TemperatureSettingRequest): Response<Unit>
+    suspend fun saveTempSettings(@Body request: TemperatureSettingRequest): Response<Unit>
 
 }
