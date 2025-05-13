@@ -24,29 +24,30 @@ import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(activity: MainActivity) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Image(painter = painterResource(android.R.drawable.ic_menu_compass), contentDescription = null, modifier = Modifier.size(80.dp))
-        HomeWeatherInfo()
+        HomeWeatherInfo(activity)
         Image(painter = painterResource(android.R.drawable.ic_menu_gallery), contentDescription = null, modifier = Modifier.size(80.dp))
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeWeatherInfo() {
+fun HomeWeatherInfo(activity: MainActivity) {
 
     val currentTime = remember { mutableStateOf(java.time.LocalDateTime.now()) }
     val date = currentTime.value.toLocalDate().toString()
     val time = currentTime.value.toLocalTime().withSecond(0).withNano(0).toString()
     val viewModel: WeatherViewModel = viewModel()
 
+
     LaunchedEffect(Unit) {
-        WebSocketClient.connect(viewModel)
+        WebSocketClient.connect(viewModel, activity)
     }
     val weatherInfoState = viewModel.messageLive.observeAsState()
     val weatherInfo = weatherInfoState.value

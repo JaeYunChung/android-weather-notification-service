@@ -23,48 +23,41 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10" // 버전은 최신 Compose에 맞게
-    }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
 }
 
 dependencies {
-    // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    // 위치 정보
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
-    // Retrofit + Gson converter
+    // Retrofit + Gson
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    // Coroutines (for suspend functions)
+    // 코루틴
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    // Optional: Toast
-    implementation("androidx.compose.ui:ui-util:1.5.1")
+    // AndroidX
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.activity:activity-compose:1.8.0")
+
+    // Compose
     implementation("androidx.compose.ui:ui:1.6.0")
+    implementation("androidx.compose.ui:ui-util:1.5.1")
     implementation("androidx.compose.material:material:1.6.0")
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.0")
     debugImplementation("androidx.compose.ui:ui-tooling:1.6.0")
 
-    // ViewModel + Compose 연동
+    // ViewModel + LiveData with Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-
-    // LiveData observeAsState
     implementation("androidx.compose.runtime:runtime-livedata:1.5.1")
-
-    // Activity Compose
-    implementation("androidx.activity:activity-compose:1.7.2")
-
-    // Optional: 코틀린 코루틴
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }

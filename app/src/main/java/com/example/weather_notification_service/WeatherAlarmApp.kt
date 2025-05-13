@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.sp
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun WeatherAlarmApp() {
+fun WeatherAlarmApp(activity: MainActivity) {
     var screen by remember { mutableStateOf(0) }
 
     Column(
@@ -23,7 +23,7 @@ fun WeatherAlarmApp() {
     ) {
         TabRow(screen) { screen = it }
         when (screen) {
-            0 -> HomeScreen()
+            0 -> HomeScreen(activity)
             1 -> NotificationSettingsScreen()
             2 -> TemperatureSettingsScreen()
             3 -> AirQualitySettingsScreen()
