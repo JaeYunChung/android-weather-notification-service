@@ -11,6 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.weather_notification_service.setting_screen.AirQualitySettingsScreen
+import com.example.weather_notification_service.setting_screen.NotificationSettingsScreen
+import com.example.weather_notification_service.setting_screen.TemperatureSettingsScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

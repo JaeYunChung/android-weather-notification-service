@@ -1,4 +1,4 @@
-package com.example.weather_notification_service
+package com.example.weather_notification_service.domain
 
 data class TemperatureSettingRequest(
     val memberId: String,

@@ -1,4 +1,4 @@
-package com.example.weather_notification_service
+package com.example.weather_notification_service.connection
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ComponentActivity
+import com.example.weather_notification_service.WeatherViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -122,7 +123,7 @@ object WebSocketClient {
                         Log.e("LocationDebug", "location request failed: ${it.message}")
                     }
 
-                handler.postDelayed(this, 5000)
+                handler.postDelayed(this, 100000)
             }
         })
     }

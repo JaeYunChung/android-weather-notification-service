@@ -1,4 +1,4 @@
-package com.example.weather_notification_service
+package com.example.weather_notification_service.connection
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
