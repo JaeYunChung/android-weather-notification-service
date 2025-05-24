@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "342320377647",
+    "project_id": "weather-notification-service",
+    "storage_bucket": "weather-notification-service.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342320377647:android:0ffdab87eb62789670bbda",
+        "android_client_info": {
+          "package_name": "com.example.weather_notification_service"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDUL6d0Alpz9USGakEiMB_1vlw-_Yo240"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ComponentActivity
 import com.example.weather_notification_service.WeatherViewModel
+import com.example.weather_notification_service.setting_screen.memberId
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -109,6 +110,7 @@ object WebSocketClient {
                             val latitude = location.latitude
                             val longitude = location.longitude
                             val json = JSONObject()
+                            json.put("memberId", memberId)
                             json.put("deviceId", deviceId)
                             json.put("longitude", longitude)
                             json.put("latitude", latitude)
@@ -123,7 +125,7 @@ object WebSocketClient {
                         Log.e("LocationDebug", "location request failed: ${it.message}")
                     }
 
-                handler.postDelayed(this, 100000)
+                handler.postDelayed(this, 10000)
             }
         })
     }
@@ -137,7 +139,7 @@ object WebSocketClient {
         Handler(Looper.getMainLooper()).postDelayed({
             Log.d("WebSocket", "Reconnecting to server...")
             connect(viewModel, activity)
-        }, 3000)
+        }, 10000)
     }
 
     @SuppressLint("MissingPermission")

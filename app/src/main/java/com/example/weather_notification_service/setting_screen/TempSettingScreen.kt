@@ -19,10 +19,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.weather_notification_service.connection.RetrofitClient
-import com.example.weather_notification_service.domain.TemperatureSettingRequest
+import com.example.weather_notification_service.domain.dto.TemperatureSettingRequest
 import kotlinx.coroutines.launch
 
 @Composable

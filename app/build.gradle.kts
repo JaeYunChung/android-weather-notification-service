@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.compose)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -35,6 +36,8 @@ android {
 }
 
 dependencies {
+    implementation("androidx.core:core-ktx:1.12.0") // NotificationManager 등 포함
+    implementation("androidx.core:core:1.12.0")
     // 위치 정보
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
@@ -60,4 +63,6 @@ dependencies {
     // ViewModel + LiveData with Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.1")
+    implementation("com.google.firebase:firebase-messaging:23.4.0")
 }
+
