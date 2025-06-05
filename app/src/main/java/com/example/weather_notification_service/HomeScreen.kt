@@ -4,6 +4,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,9 +30,22 @@ fun HomeScreen(activity: MainActivity) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        Image(painter = painterResource(android.R.drawable.ic_menu_compass), contentDescription = null, modifier = Modifier.size(80.dp))
-        HomeWeatherInfo(activity)
-        Image(painter = painterResource(android.R.drawable.ic_menu_gallery), contentDescription = null, modifier = Modifier.size(80.dp))
+        Image(
+            painter = painterResource(android.R.drawable.ic_menu_compass),
+            contentDescription = null,
+            modifier = Modifier.size(80.dp)
+        )
+        Card(
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            HomeWeatherInfo(activity)
+        }
+        Image(
+            painter = painterResource(android.R.drawable.ic_menu_gallery),
+            contentDescription = null,
+            modifier = Modifier.size(80.dp)
+        )
     }
 }
 
@@ -49,16 +65,16 @@ fun HomeWeatherInfo(activity: MainActivity) {
     val weatherInfoState = viewModel.messageLive.observeAsState()
     val weatherInfo = weatherInfoState.value;
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(date, fontSize = 20.sp)
-        Text(time, fontSize = 18.sp)
+    Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(date, style = MaterialTheme.typography.titleMedium)
+        Text(time, style = MaterialTheme.typography.titleSmall)
         Spacer(modifier = Modifier.height(8.dp))
         Text(weatherInfo?.getString("image")?:"", fontSize = 42.sp)
-        Text(weatherInfo?.getString("weather")?:"", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Text(weatherInfo?.getString("weather")?:"", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
-        Text(weatherInfo?.getString("message")?:"", fontSize = 16.sp)
+        Text(weatherInfo?.getString("message")?:"", style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Alert ON", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-        Text("Air Quality Alert: ON", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+        Text("Alert ON", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
+        Text("Air Quality Alert: ON", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
     }
 }
