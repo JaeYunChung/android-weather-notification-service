@@ -32,8 +32,12 @@ fun HomeScreen(activity: MainActivity) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
+
         Icon(
             imageVector = Icons.Default.WbSunny,
+
+        Image(
+            painter = painterResource(android.R.drawable.ic_menu_compass),
             contentDescription = null,
             modifier = Modifier.size(80.dp)
         )
@@ -43,8 +47,13 @@ fun HomeScreen(activity: MainActivity) {
         ) {
             HomeWeatherInfo(activity)
         }
+
         Icon(
             imageVector = Icons.Default.Cloud,
+
+        Image(
+            painter = painterResource(android.R.drawable.ic_menu_gallery),
+
             contentDescription = null,
             modifier = Modifier.size(80.dp)
         )

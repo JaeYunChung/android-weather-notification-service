@@ -1,5 +1,6 @@
 package com.example.weather_notification_service.setting_screen
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -30,15 +31,31 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TemperatureSettingsScreen() {
+
     var range by remember { mutableStateOf(10f..30f) }
+
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("temp_setting", Context.MODE_PRIVATE)
 
+    var minTemp by remember { mutableStateOf(sharedPref.getFloat("min_temp", 10f) ?:10f) }
+    var maxTemp by remember { mutableStateOf(sharedPref.getFloat("max_temp", 30f)) }
     Column(modifier = Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Default.Thermostat, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
             Text("Alert range")
+
+        Text("Alert if below")
+        Column {
+            Slider(value = minTemp, onValueChange = { minTemp = it }, valueRange = -10f..20f)
+            Text(text = "${minTemp.toInt()}°C")
+        }
+        Text("Alert if above")
+        Column {
+            Slider(value = maxTemp, onValueChange = { maxTemp = it }, valueRange = 25f..45f)
+            Text(text = "${maxTemp.toInt()}°C")
         }
         RangeSlider(
             value = range,
@@ -51,6 +68,12 @@ fun TemperatureSettingsScreen() {
             coroutineScope.launch {
                 try {
                     val request = TemperatureSettingRequest(memberId, range.start, range.endInclusive)
+                    with(sharedPref.edit()){
+                        putFloat("min_temp", minTemp)
+                        putFloat("max_temp", maxTemp)
+                        apply()
+                    }
+                    val request = TemperatureSettingRequest(memberId, minTemp, maxTemp)
                     Log.d("DEBUG", "request: $request")
                     val response = RetrofitClient.apiService.saveTempSettings(request)
                     Log.d("DEBUG", "Response: $response")
