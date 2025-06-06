@@ -3,15 +3,26 @@ package com.example.weather_notification_service.setting_screen
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AcUnit
+import androidx.compose.material.icons.filled.Masks
+import androidx.compose.material.icons.filled.Umbrella
+import androidx.compose.material.icons.filled.Weekend
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.Button
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.weather_notification_service.connection.RetrofitClient
 import com.example.weather_notification_service.domain.CustomSettingEntity
+import com.example.weather_notification_service.domain.dto.NotificationTimeRequest
 import kotlinx.coroutines.launch
 
 val memberId = "hello"
@@ -26,6 +37,7 @@ fun NotificationSettingsScreen() {
     var dustAlert by remember { mutableStateOf(true) }
     var tempAlert by remember { mutableStateOf(true) }
     var weekendOff by remember { mutableStateOf(false) }
+    var timeRange by remember { mutableStateOf(8f..22f) }
 
     LaunchedEffect(Unit) {
         try {
@@ -46,7 +58,11 @@ fun NotificationSettingsScreen() {
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        SettingRow("Get alerts for rain", rainAlert)  { newValue ->
+        SettingRow(
+            label = "Get alerts for rain",
+            icon = Icons.Default.Umbrella,
+            checked = rainAlert
+        ) { newValue ->
             rainAlert = newValue
             coroutineScope.launch {
                 try {
@@ -63,7 +79,11 @@ fun NotificationSettingsScreen() {
                 }
             }
         }
-        SettingRow("Get alerts for poor air quality", dustAlert)  { newValue ->
+        SettingRow(
+            label = "Get alerts for poor air quality",
+            icon = Icons.Default.Masks,
+            checked = dustAlert
+        ) { newValue ->
             dustAlert = newValue
             coroutineScope.launch {
                 try {
@@ -80,7 +100,11 @@ fun NotificationSettingsScreen() {
                 }
             }
         }
-        SettingRow("Get clothing alerts for low temp", tempAlert)  { newValue ->
+        SettingRow(
+            label = "Get clothing alerts for low temp",
+            icon = Icons.Default.AcUnit,
+            checked = tempAlert
+        ) { newValue ->
             tempAlert = newValue
             coroutineScope.launch {
                 try {
@@ -97,16 +121,52 @@ fun NotificationSettingsScreen() {
                 }
             }
         }
-        SettingRow("Turn off alerts on weekends", weekendOff) { weekendOff = it }
+        SettingRow(
+            label = "Turn off alerts on weekends",
+            icon = Icons.Default.Weekend,
+            checked = weekendOff,
+            onToggle = { weekendOff = it }
+        )
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Schedule, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
+                Text("Receive alerts between")
+            }
+            RangeSlider(
+                value = timeRange,
+                onValueChange = { timeRange = it },
+                valueRange = 0f..23f
+            )
+            Text("${timeRange.start.toInt()}시 - ${timeRange.endInclusive.toInt()}시")
+            Button(onClick = {
+                coroutineScope.launch {
+                    try {
+                        val request = NotificationTimeRequest(memberId, timeRange.start.toInt(), timeRange.endInclusive.toInt())
+                        val response = RetrofitClient.apiService.saveNotificationTime(request)
+                        if (response.isSuccessful) {
+                            Toast.makeText(context, "시간 설정이 저장되었습니다", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, "서버 오류", Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }) {
+                Text("Save Time")
+            }
+        }
     }
 }
 
 @Composable
-fun SettingRow(label: String, checked: Boolean, onToggle: (Boolean) -> Unit) {
+fun SettingRow(label: String, icon: ImageVector, checked: Boolean, onToggle: (Boolean) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(icon, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
         Text(label)
         Spacer(Modifier.weight(1f))
         Switch(checked = checked, onCheckedChange = onToggle)

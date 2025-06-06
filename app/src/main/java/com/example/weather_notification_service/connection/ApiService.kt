@@ -6,6 +6,7 @@ import com.example.weather_notification_service.domain.dto.CustomSettingResponse
 import com.example.weather_notification_service.domain.DustSettingEntity
 import com.example.weather_notification_service.domain.dto.NotificationTokenDto
 import com.example.weather_notification_service.domain.dto.TemperatureSettingRequest
+import com.example.weather_notification_service.domain.dto.NotificationTimeRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -27,4 +28,7 @@ interface ApiService {
 
     @POST("/new/notification")
     suspend fun sendNotificationToken(@Query("memberId") memberId:String, @Body request: NotificationTokenDto):Response<Unit>
+
+    @POST("/notify/time/")
+    suspend fun saveNotificationTime(@Body request: NotificationTimeRequest): Response<Unit>
 }
