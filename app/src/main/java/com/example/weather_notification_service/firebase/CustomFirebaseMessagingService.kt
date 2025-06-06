@@ -8,13 +8,45 @@ import android.content.Context
 import android.icu.util.ULocale.Category
 import android.os.Build
 import android.util.Log
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.lifecycleScope
 import com.example.weather_notification_service.R
+import com.example.weather_notification_service.connection.RetrofitClient
+import com.example.weather_notification_service.domain.dto.NotificationTokenDto
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
-@SuppressLint("MissingFirebaseInstanceTokenRefresh")
+
 class CustomFirebaseMessagingService : FirebaseMessagingService() {
+    private val serviceJob = SupervisorJob()
+    private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+        Log.d("FCM", "Refreshed token: $token")
+        val dto = NotificationTokenDto(token);
+
+        serviceScope.launch {
+            try {
+                val response = RetrofitClient.apiService.sendNotificationToken("hello", dto)
+                if (response.isSuccessful) {
+                    Log.d("FCM", "Token sent")
+                } else {
+                    Log.e("FCM", "Fail code: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e("FCM", "Retrofit 예외", e)
+            }
+        }
+        // 이 토큰을 앱 서버로 전송하여 저장해야 합니다.
+        // 예: sendRegistrationToServer(token)
+    }
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
@@ -51,6 +83,7 @@ class CustomFirebaseMessagingService : FirebaseMessagingService() {
                 setShowBadge(true)
             }
             notificationManager.createNotificationChannel(channel)
+
         }
 
 

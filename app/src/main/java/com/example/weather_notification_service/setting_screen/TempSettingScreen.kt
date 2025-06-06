@@ -1,5 +1,6 @@
 package com.example.weather_notification_service.setting_screen
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -26,13 +27,15 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TemperatureSettingsScreen() {
-    var minTemp by remember { mutableStateOf(10f) }
-    var maxTemp by remember { mutableStateOf(30f) }
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("temp_setting", Context.MODE_PRIVATE)
 
+    var minTemp by remember { mutableStateOf(sharedPref.getFloat("min_temp", 10f) ?:10f) }
+    var maxTemp by remember { mutableStateOf(sharedPref.getFloat("max_temp", 30f)) }
     Column(modifier = Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+
         Text("Alert if below")
         Column {
             Slider(value = minTemp, onValueChange = { minTemp = it }, valueRange = -10f..20f)
@@ -47,6 +50,11 @@ fun TemperatureSettingsScreen() {
         Button(onClick = {
             coroutineScope.launch {
                 try {
+                    with(sharedPref.edit()){
+                        putFloat("min_temp", minTemp)
+                        putFloat("max_temp", maxTemp)
+                        apply()
+                    }
                     val request = TemperatureSettingRequest(memberId, minTemp, maxTemp)
                     Log.d("DEBUG", "request: $request")
                     val response = RetrofitClient.apiService.saveTempSettings(request)

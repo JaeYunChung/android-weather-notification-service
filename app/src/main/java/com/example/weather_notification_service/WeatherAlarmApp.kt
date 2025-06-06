@@ -3,7 +3,6 @@ package com.example.weather_notification_service
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Home
@@ -11,15 +10,12 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.weather_notification_service.setting_screen.AirQualitySettingsScreen
 import com.example.weather_notification_service.setting_screen.NotificationSettingsScreen
 import com.example.weather_notification_service.setting_screen.TemperatureSettingsScreen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeatherAlarmApp(activity: MainActivity) {
