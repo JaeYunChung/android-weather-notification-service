@@ -4,18 +4,11 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AcUnit
-import androidx.compose.material.icons.filled.Masks
-import androidx.compose.material.icons.filled.Umbrella
-import androidx.compose.material.icons.filled.Weekend
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.weather_notification_service.connection.RetrofitClient
@@ -55,11 +48,7 @@ fun NotificationSettingsScreen() {
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        SettingRow(
-            label = "Get alerts for rain",
-            icon = Icons.Default.Umbrella,
-            checked = rainAlert
-        ) { newValue ->
+        SettingRow("Get alerts for rain", rainAlert)  { newValue ->
             rainAlert = newValue
             with(sharedPref.edit()){
                 putBoolean("rain_alert", newValue);
@@ -80,11 +69,7 @@ fun NotificationSettingsScreen() {
                 }
             }
         }
-        SettingRow(
-            label = "Get alerts for poor air quality",
-            icon = Icons.Default.Masks,
-            checked = dustAlert
-        ) { newValue ->
+        SettingRow("Get alerts for poor air quality", dustAlert)  { newValue ->
             dustAlert = newValue
             with(sharedPref.edit()){
                 putBoolean("dust_alert", newValue);
@@ -105,11 +90,7 @@ fun NotificationSettingsScreen() {
                 }
             }
         }
-        SettingRow(
-            label = "Get clothing alerts for low temp",
-            icon = Icons.Default.AcUnit,
-            checked = tempAlert
-        ) { newValue ->
+        SettingRow("Get clothing alerts for low temp", tempAlert)  { newValue ->
             tempAlert = newValue
             with(sharedPref.edit()){
                 putBoolean("temp_alert", newValue);
@@ -130,22 +111,16 @@ fun NotificationSettingsScreen() {
                 }
             }
         }
-        SettingRow(
-            label = "Turn off alerts on weekends",
-            icon = Icons.Default.Weekend,
-            checked = weekendOff,
-            onToggle = { weekendOff = it }
-        )
+        SettingRow("Turn off alerts on weekends", weekendOff) { weekendOff = it }
     }
 }
 
 @Composable
-fun SettingRow(label: String, icon: ImageVector, checked: Boolean, onToggle: (Boolean) -> Unit) {
+fun SettingRow(label: String, checked: Boolean, onToggle: (Boolean) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(icon, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
         Text(label)
         Spacer(Modifier.weight(1f))
         Switch(checked = checked, onCheckedChange = onToggle)
