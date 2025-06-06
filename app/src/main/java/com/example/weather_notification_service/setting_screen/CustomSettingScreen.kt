@@ -9,9 +9,12 @@ import androidx.compose.material.icons.filled.AcUnit
 import androidx.compose.material.icons.filled.Masks
 import androidx.compose.material.icons.filled.Umbrella
 import androidx.compose.material.icons.filled.Weekend
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.Button
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.weather_notification_service.connection.RetrofitClient
 import com.example.weather_notification_service.domain.CustomSettingEntity
+import com.example.weather_notification_service.domain.dto.NotificationTimeRequest
 import kotlinx.coroutines.launch
 
 val memberId = "hello"
@@ -31,10 +35,11 @@ fun NotificationSettingsScreen() {
     val coroutineScope = rememberCoroutineScope()
     val sharedPref = context.getSharedPreferences("alert_setting", Context.MODE_PRIVATE)
 
-    var rainAlert by remember { mutableStateOf(sharedPref.getBoolean("rain_alert", false)) }
-    var dustAlert by remember { mutableStateOf(sharedPref.getBoolean("dust_alert", false)) }
-    var tempAlert by remember { mutableStateOf(sharedPref.getBoolean("temp_alert", false)) }
-    var weekendOff by remember { mutableStateOf(sharedPref.getBoolean("week_alert", false)) }
+    var rainAlert by remember { mutableStateOf(true) }
+    var dustAlert by remember { mutableStateOf(true) }
+    var tempAlert by remember { mutableStateOf(true) }
+    var weekendOff by remember { mutableStateOf(false) }
+    var timeRange by remember { mutableStateOf(8f..22f) }
 
     LaunchedEffect(Unit) {
         try {
@@ -136,6 +141,36 @@ fun NotificationSettingsScreen() {
             checked = weekendOff,
             onToggle = { weekendOff = it }
         )
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Schedule, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
+                Text("Receive alerts between")
+            }
+            RangeSlider(
+                value = timeRange,
+                onValueChange = { timeRange = it },
+                valueRange = 0f..23f
+            )
+            Text("${timeRange.start.toInt()}시 - ${timeRange.endInclusive.toInt()}시")
+            Button(onClick = {
+                coroutineScope.launch {
+                    try {
+                        val request = NotificationTimeRequest(memberId, timeRange.start.toInt(), timeRange.endInclusive.toInt())
+                        val response = RetrofitClient.apiService.saveNotificationTime(request)
+                        if (response.isSuccessful) {
+                            Toast.makeText(context, "시간 설정이 저장되었습니다", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, "서버 오류", Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }) {
+                Text("Save Time")
+            }
+        }
     }
 }
 

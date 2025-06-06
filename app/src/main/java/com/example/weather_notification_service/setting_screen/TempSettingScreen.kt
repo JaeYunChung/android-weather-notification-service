@@ -56,7 +56,6 @@ fun TemperatureSettingsScreen() {
 
                     val request = TemperatureSettingRequest(memberId, range.start, range.endInclusive)
 
-                    
                     Log.d("DEBUG", "request: $request")
                     val response = RetrofitClient.apiService.saveTempSettings(request)
                     Log.d("DEBUG", "Response: $response")

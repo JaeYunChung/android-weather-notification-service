@@ -32,7 +32,6 @@ fun HomeScreen(activity: MainActivity) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-
         Icon(
             imageVector = Icons.Default.WbSunny,
 
