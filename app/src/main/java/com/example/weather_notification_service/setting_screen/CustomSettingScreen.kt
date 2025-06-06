@@ -13,7 +13,7 @@ import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Button
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,7 +39,8 @@ fun NotificationSettingsScreen() {
     var dustAlert by remember { mutableStateOf(true) }
     var tempAlert by remember { mutableStateOf(true) }
     var weekendOff by remember { mutableStateOf(false) }
-    var timeRange by remember { mutableStateOf(8f..22f) }
+    var selectedHour by remember { mutableStateOf(8f) }
+    var alertTimes by remember { mutableStateOf(listOf<Int>()) }
 
     LaunchedEffect(Unit) {
         try {
@@ -145,18 +146,31 @@ fun NotificationSettingsScreen() {
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Schedule, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
-                Text("Receive alerts between")
+                Text("Select alert time")
             }
-            RangeSlider(
-                value = timeRange,
-                onValueChange = { timeRange = it },
-                valueRange = 0f..23f
+            Slider(
+                value = selectedHour,
+                onValueChange = { selectedHour = it },
+                valueRange = 0f..23f,
+                steps = 23
             )
-            Text("${timeRange.start.toInt()}시 - ${timeRange.endInclusive.toInt()}시")
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("${selectedHour.toInt()}시")
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(onClick = {
+                    val hour = selectedHour.toInt()
+                    if (!alertTimes.contains(hour)) {
+                        alertTimes = alertTimes + hour
+                    }
+                }) {
+                    Text("Add Time")
+                }
+            }
+            Text("Selected: ${'$'}{alertTimes.sorted().joinToString(", ") { it.toString() + "시" }}")
             Button(onClick = {
                 coroutineScope.launch {
                     try {
-                        val request = NotificationTimeRequest(memberId, timeRange.start.toInt(), timeRange.endInclusive.toInt())
+                        val request = NotificationTimeRequest(memberId, alertTimes)
                         val response = RetrofitClient.apiService.saveNotificationTime(request)
                         if (response.isSuccessful) {
                             Toast.makeText(context, "시간 설정이 저장되었습니다", Toast.LENGTH_SHORT).show()
