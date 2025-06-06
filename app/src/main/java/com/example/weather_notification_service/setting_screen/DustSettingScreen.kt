@@ -10,8 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.weather_notification_service.connection.RetrofitClient
@@ -39,14 +42,15 @@ fun AirQualitySettingsScreen() {
         Text("pm10 ")
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             options.forEach { level ->
-                Button(
+                FilterChip(
+                    selected = selectedQualityPM10 == level,
                     onClick = { selectedQualityPM10 = level },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (selectedQualityPM10 == level) Color(0xFF6A1B9A) else Color.LightGray
-                    )
-                ) {
-                    Text(level, color = Color.White)
-                }
+                    label = { Text(level) },
+                    leadingIcon = if (selectedQualityPM10 == level) {
+                        { Icon(Icons.Default.Done, contentDescription = null) }
+                    } else null,
+                    colors = FilterChipDefaults.filterChipColors()
+                )
             }
         }
         Text("선택된 등급: ${selectedQualityPM10}")
@@ -54,14 +58,15 @@ fun AirQualitySettingsScreen() {
         Text("pm25 ")
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             options.forEach { level ->
-                Button(
+                FilterChip(
+                    selected = selectedQualityPM25 == level,
                     onClick = { selectedQualityPM25 = level },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (selectedQualityPM25 == level) Color(0xFF6A1B9A) else Color.LightGray
-                    )
-                ) {
-                    Text(level, color = Color.White)
-                }
+                    label = { Text(level) },
+                    leadingIcon = if (selectedQualityPM25 == level) {
+                        { Icon(Icons.Default.Done, contentDescription = null) }
+                    } else null,
+                    colors = FilterChipDefaults.filterChipColors(),
+                )
             }
         }
         Text("선택된 등급: ${selectedQualityPM25}")
