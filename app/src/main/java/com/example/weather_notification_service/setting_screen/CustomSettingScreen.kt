@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
 
 val memberId = "hello"
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NotificationSettingsScreen() {
 
@@ -144,7 +145,7 @@ fun NotificationSettingsScreen() {
             }
         }
         SettingRow(
-            label = "Turn off alerts on weekends",
+            label = "repeat the alarm",
             icon = Icons.Default.Weekend,
             checked = weekendOff,
             onToggle = { weekendOff = it }
@@ -170,7 +171,7 @@ fun NotificationSettingsScreen() {
                     steps = 23
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("${'$'}{selectedHour.toInt()}시")
+                    Text("${selectedHour.toInt()}시")
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(onClick = {
                         val hour = selectedHour.toInt()
@@ -192,7 +193,7 @@ fun NotificationSettingsScreen() {
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                             ) {
-                                Text("${'$'}hour시")
+                                Text("${hour}시")
                                 IconButton(onClick = { alertTimes = alertTimes - hour }) {
                                     Icon(Icons.Default.Close, contentDescription = "Remove")
                                 }
