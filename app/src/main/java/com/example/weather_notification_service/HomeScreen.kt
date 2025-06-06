@@ -2,8 +2,11 @@ package com.example.weather_notification_service
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -15,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,8 +32,10 @@ fun HomeScreen(activity: MainActivity) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        Image(
-            painter = painterResource(android.R.drawable.ic_menu_compass),
+
+        Icon(
+            imageVector = Icons.Default.WbSunny,
+
             contentDescription = null,
             modifier = Modifier.size(80.dp)
         )
@@ -41,8 +45,9 @@ fun HomeScreen(activity: MainActivity) {
         ) {
             HomeWeatherInfo(activity)
         }
-        Image(
-            painter = painterResource(android.R.drawable.ic_menu_gallery),
+
+        Icon(
+            imageVector = Icons.Default.Cloud,
             contentDescription = null,
             modifier = Modifier.size(80.dp)
         )
