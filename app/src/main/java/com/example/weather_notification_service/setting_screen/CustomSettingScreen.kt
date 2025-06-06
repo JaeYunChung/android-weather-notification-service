@@ -1,5 +1,6 @@
 package com.example.weather_notification_service.setting_screen
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -32,6 +33,7 @@ fun NotificationSettingsScreen() {
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val sharedPref = context.getSharedPreferences("alert_setting", Context.MODE_PRIVATE)
 
     var rainAlert by remember { mutableStateOf(true) }
     var dustAlert by remember { mutableStateOf(true) }
@@ -64,6 +66,10 @@ fun NotificationSettingsScreen() {
             checked = rainAlert
         ) { newValue ->
             rainAlert = newValue
+            with(sharedPref.edit()){
+                putBoolean("rain_alert", newValue);
+                apply()
+            }
             coroutineScope.launch {
                 try {
                     // 예시용 API (적절히 수정 필요)
@@ -85,6 +91,10 @@ fun NotificationSettingsScreen() {
             checked = dustAlert
         ) { newValue ->
             dustAlert = newValue
+            with(sharedPref.edit()){
+                putBoolean("dust_alert", newValue);
+                apply()
+            }
             coroutineScope.launch {
                 try {
                     // 예시용 API (적절히 수정 필요)
@@ -106,6 +116,10 @@ fun NotificationSettingsScreen() {
             checked = tempAlert
         ) { newValue ->
             tempAlert = newValue
+            with(sharedPref.edit()){
+                putBoolean("temp_alert", newValue);
+                apply()
+            }
             coroutineScope.launch {
                 try {
                     // 예시용 API (적절히 수정 필요)

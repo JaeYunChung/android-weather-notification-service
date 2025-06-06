@@ -34,6 +34,7 @@ fun HomeScreen(activity: MainActivity) {
     ) {
         Icon(
             imageVector = Icons.Default.WbSunny,
+
             contentDescription = null,
             modifier = Modifier.size(80.dp)
         )
@@ -43,6 +44,7 @@ fun HomeScreen(activity: MainActivity) {
         ) {
             HomeWeatherInfo(activity)
         }
+
         Icon(
             imageVector = Icons.Default.Cloud,
             contentDescription = null,

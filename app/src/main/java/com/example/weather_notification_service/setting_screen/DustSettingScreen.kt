@@ -1,5 +1,6 @@
 package com.example.weather_notification_service.setting_screen
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -34,9 +35,10 @@ fun AirQualitySettingsScreen() {
     Column(modifier = Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         val coroutineScope = rememberCoroutineScope()
         val context = LocalContext.current
+        val sharedPref = context.getSharedPreferences("dust_settings", Context.MODE_PRIVATE)
         Text("미세먼지 등급 선택")
         val options = listOf("좋음", "보통", "나쁨")
-        var selectedQualityPM10 by remember { mutableStateOf("보통") }
+        var selectedQualityPM10 by remember { mutableStateOf(sharedPref.getString("pm10_level", "보통")?:"보통") }
         Text("pm10 ")
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             options.forEach { level ->
@@ -52,7 +54,7 @@ fun AirQualitySettingsScreen() {
             }
         }
         Text("선택된 등급: ${selectedQualityPM10}")
-        var selectedQualityPM25 by remember { mutableStateOf("보통") }
+        var selectedQualityPM25 by remember { mutableStateOf(sharedPref.getString("pm25_level", "보통")?:"보통") }
         Text("pm25 ")
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             options.forEach { level ->
@@ -75,6 +77,13 @@ fun AirQualitySettingsScreen() {
                 try {
                     val request = DustSettingEntity(memberId, selectedQualityPM10, selectedQualityPM25)
                     Log.d("DEBUG", "request: $request")
+
+                    with(sharedPref.edit()) {
+                        putString("pm10_level", selectedQualityPM10)
+                        putString("pm25_level", selectedQualityPM25)
+                        apply()
+                    }
+
                     val response = RetrofitClient.apiService.saveDustSettings(request)
                     Log.d("DEBUG", "Response: $response")
                     if (response.isSuccessful) {
