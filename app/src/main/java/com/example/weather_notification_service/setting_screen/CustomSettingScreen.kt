@@ -4,17 +4,24 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AcUnit
 import androidx.compose.material.icons.filled.Masks
 import androidx.compose.material.icons.filled.Umbrella
 import androidx.compose.material.icons.filled.Weekend
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -143,46 +150,77 @@ fun NotificationSettingsScreen() {
             onToggle = { weekendOff = it }
         )
 
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Schedule, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
-                Text("Select alert time")
-            }
-            Slider(
-                value = selectedHour,
-                onValueChange = { selectedHour = it },
-                valueRange = 0f..23f,
-                steps = 23
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("${selectedHour.toInt()}시")
-                Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = {
-                    val hour = selectedHour.toInt()
-                    if (!alertTimes.contains(hour)) {
-                        alertTimes = alertTimes + hour
-                    }
-                }) {
-                    Text("Add Time")
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors()
+        ) {
+            Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Default.Schedule,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text("Select alert times")
                 }
-            }
-            Text("Selected: ${'$'}{alertTimes.sorted().joinToString(", ") { it.toString() + "시" }}")
-            Button(onClick = {
-                coroutineScope.launch {
-                    try {
-                        val request = NotificationTimeRequest(memberId, alertTimes)
-                        val response = RetrofitClient.apiService.saveNotificationTime(request)
-                        if (response.isSuccessful) {
-                            Toast.makeText(context, "시간 설정이 저장되었습니다", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, "서버 오류", Toast.LENGTH_SHORT).show()
+                Slider(
+                    value = selectedHour,
+                    onValueChange = { selectedHour = it },
+                    valueRange = 0f..23f,
+                    steps = 23
+                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("${'$'}{selectedHour.toInt()}시")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(onClick = {
+                        val hour = selectedHour.toInt()
+                        if (!alertTimes.contains(hour)) {
+                            alertTimes = alertTimes + hour
                         }
-                    } catch (e: Exception) {
-                        Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
+                    }) {
+                        Text("Add")
                     }
                 }
-            }) {
-                Text("Save Time")
+                FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    alertTimes.sorted().forEach { hour ->
+                        Card(
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                            colors = CardDefaults.outlinedCardColors(),
+                            modifier = Modifier.padding(top = 8.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                            ) {
+                                Text("${'$'}hour시")
+                                IconButton(onClick = { alertTimes = alertTimes - hour }) {
+                                    Icon(Icons.Default.Close, contentDescription = "Remove")
+                                }
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            try {
+                                val request = NotificationTimeRequest(memberId, alertTimes)
+                                val response = RetrofitClient.apiService.saveNotificationTime(request)
+                                if (response.isSuccessful) {
+                                    Toast.makeText(context, "시간 설정이 저장되었습니다", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(context, "서버 오류", Toast.LENGTH_SHORT).show()
+                                }
+                            } catch (e: Exception) {
+                                Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text("Save")
+                }
             }
         }
     }
