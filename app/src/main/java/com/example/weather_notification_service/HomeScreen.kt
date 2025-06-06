@@ -32,8 +32,10 @@ fun HomeScreen(activity: MainActivity) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
+
         Icon(
             imageVector = Icons.Default.WbSunny,
+
             contentDescription = null,
             modifier = Modifier.size(80.dp)
         )
@@ -43,6 +45,7 @@ fun HomeScreen(activity: MainActivity) {
         ) {
             HomeWeatherInfo(activity)
         }
+
         Icon(
             imageVector = Icons.Default.Cloud,
             contentDescription = null,

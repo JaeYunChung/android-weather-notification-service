@@ -1,5 +1,6 @@
 package com.example.weather_notification_service.setting_screen
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -30,12 +31,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TemperatureSettingsScreen() {
+
     var range by remember { mutableStateOf(10f..30f) }
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-
+   
     Column(modifier = Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Default.Thermostat, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
             Text("Alert range")
@@ -50,7 +53,10 @@ fun TemperatureSettingsScreen() {
         Button(onClick = {
             coroutineScope.launch {
                 try {
+
                     val request = TemperatureSettingRequest(memberId, range.start, range.endInclusive)
+
+                    
                     Log.d("DEBUG", "request: $request")
                     val response = RetrofitClient.apiService.saveTempSettings(request)
                     Log.d("DEBUG", "Response: $response")
