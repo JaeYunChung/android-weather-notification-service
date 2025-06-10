@@ -15,7 +15,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.Slider
+import android.widget.NumberPicker
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -47,8 +48,9 @@ fun NotificationSettingsScreen() {
     var dustAlert by remember { mutableStateOf(true) }
     var tempAlert by remember { mutableStateOf(true) }
     var weekendOff by remember { mutableStateOf(false) }
-    var selectedHour by remember { mutableStateOf(8f) }
-    var alertTimes by remember { mutableStateOf(listOf<Int>()) }
+    var selectedHour by remember { mutableStateOf(8) }
+    var selectedMinute by remember { mutableStateOf(0) }
+    var alertTimes by remember { mutableStateOf(listOf<String>()) }
 
     LaunchedEffect(Unit) {
         try {
@@ -164,26 +166,28 @@ fun NotificationSettingsScreen() {
                     )
                     Text("Select alert times")
                 }
-                Slider(
-                    value = selectedHour,
-                    onValueChange = { selectedHour = it },
-                    valueRange = 0f..23f,
-                    steps = 23
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.padding(vertical = 8.dp)
+                ) {
+                    WheelNumberPicker(value = selectedHour, range = 0..23, onValueChange = { selectedHour = it })
+                    WheelNumberPicker(value = selectedMinute, range = 0..59, onValueChange = { selectedMinute = it })
+                }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("${selectedHour.toInt()}시")
+                    Text(String.format("%02d:%02d", selectedHour, selectedMinute))
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(onClick = {
-                        val hour = selectedHour.toInt()
-                        if (!alertTimes.contains(hour)) {
-                            alertTimes = alertTimes + hour
+                        val time = String.format("%02d:%02d", selectedHour, selectedMinute)
+                        if (!alertTimes.contains(time)) {
+                            alertTimes = alertTimes + time
                         }
                     }) {
                         Text("Add")
                     }
                 }
                 FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    alertTimes.sorted().forEach { hour ->
+                    alertTimes.sorted().forEach { time ->
                         Card(
                             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                             colors = CardDefaults.outlinedCardColors(),
@@ -193,8 +197,8 @@ fun NotificationSettingsScreen() {
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                             ) {
-                                Text("${hour}시")
-                                IconButton(onClick = { alertTimes = alertTimes - hour }) {
+                                Text(time)
+                                IconButton(onClick = { alertTimes = alertTimes - time }) {
                                     Icon(Icons.Default.Close, contentDescription = "Remove")
                                 }
                             }
@@ -238,6 +242,24 @@ fun SettingRow(label: String, icon: ImageVector, checked: Boolean, onToggle: (Bo
         Spacer(Modifier.weight(1f))
         Switch(checked = checked, onCheckedChange = onToggle)
     }
+}
+
+@Composable
+fun WheelNumberPicker(value: Int, range: IntRange, onValueChange: (Int) -> Unit, modifier: Modifier = Modifier) {
+    AndroidView(
+        factory = { context ->
+            NumberPicker(context).apply {
+                minValue = range.first
+                maxValue = range.last
+                this.value = value
+                setOnValueChangedListener { _, _, newVal ->
+                    onValueChange(newVal)
+                }
+            }
+        },
+        update = { picker -> picker.value = value },
+        modifier = modifier
+    )
 }
 
 
